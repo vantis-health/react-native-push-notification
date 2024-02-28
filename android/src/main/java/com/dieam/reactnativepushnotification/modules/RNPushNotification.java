@@ -226,6 +226,15 @@ public class RNPushNotification extends ReactContextBaseJavaModule implements Ac
 
     @ReactMethod
     /**
+     * Opens system settings to the app's page where the user can grant exact alarms permission
+     *
+     */
+    public void openAlarmPermissionSettings() {
+        mRNPushNotificationHelper.openAlarmPermissionSettings();
+    }
+
+    @ReactMethod
+    /**
      * Cancel scheduled notification, and remove notification from the notification centre.
      *
      */

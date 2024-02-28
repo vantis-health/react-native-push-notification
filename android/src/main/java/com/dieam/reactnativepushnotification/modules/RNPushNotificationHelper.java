@@ -184,6 +184,20 @@ public class RNPushNotificationHelper {
         }
     }
 
+    public void openAlarmPermissionSettings() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            return;
+        }
+        try {
+            Intent intent = new Intent();
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setAction(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+            String packageName = context.getPackageName();
+            intent.setData(Uri.parse("package:" + packageName));
+            context.startActivity(intent);
+        } catch (Exception e) {}
+    }
+
     public boolean canScheduleExactAlarms() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             return getAlarmManager().canScheduleExactAlarms();
