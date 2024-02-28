@@ -50,6 +50,9 @@ NotificationsComponent.prototype.cancelAllLocalNotifications = function() {
 NotificationsComponent.prototype.openAlarmPermissionSettings = function() {
 	RNPushNotification.openAlarmPermissionSettings();
 };
+NotificationsComponent.prototype.canScheduleExactAlarms = function() {
+	return RNPushNotification.canScheduleExactAlarms();
+};
 
 NotificationsComponent.prototype.presentLocalNotification = function(details) {
 	RNPushNotification.presentLocalNotification(details);
