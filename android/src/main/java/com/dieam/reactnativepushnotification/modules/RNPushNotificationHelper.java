@@ -21,6 +21,7 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.service.notification.StatusBarNotification;
 import android.text.Spanned;
 import android.util.Log;
@@ -161,7 +162,6 @@ public class RNPushNotificationHelper {
 
     public void sendNotificationScheduledCore(Bundle bundle) {
         long fireDate = (long) bundle.getDouble("fireDate");
-        boolean allowWhileIdle = bundle.getBoolean("allowWhileIdle");
 
         // If the fireDate is in past, this will fire immediately and show the
         // notification to the user
@@ -173,17 +173,37 @@ public class RNPushNotificationHelper {
 
         Log.d(LOG_TAG, String.format("Setting a notification with id %s at time %s",
                 bundle.getString("id"), Long.toString(fireDate)));
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            if (allowWhileIdle && Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (canScheduleExactAlarms()) {
                 getAlarmManager().setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, fireDate, pendingIntent);
             } else {
-                getAlarmManager().setExact(AlarmManager.RTC_WAKEUP, fireDate, pendingIntent);
+                getAlarmManager().setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, fireDate, pendingIntent);
             }
         } else {
             getAlarmManager().set(AlarmManager.RTC_WAKEUP, fireDate, pendingIntent);
         }
     }
 
+    public void openAlarmPermissionSettings() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) {
+            return;
+        }
+        try {
+            Intent intent = new Intent();
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.setAction(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM);
+            String packageName = context.getPackageName();
+            intent.setData(Uri.parse("package:" + packageName));
+            context.startActivity(intent);
+        } catch (Exception e) {}
+    }
+
+    public boolean canScheduleExactAlarms() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            return getAlarmManager().canScheduleExactAlarms();
+        }
+        return true;
+    }
 
     public void sendToNotificationCentre(final Bundle bundle) {
       RNPushNotificationPicturesAggregator aggregator = new RNPushNotificationPicturesAggregator(new RNPushNotificationPicturesAggregator.Callback() {

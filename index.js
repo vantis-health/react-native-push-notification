@@ -516,6 +516,20 @@ Notifications.cancelAllLocalNotifications = function() {
     return this.callNative('cancelAllLocalNotifications', arguments);
   }
 };
+Notifications.openAlarmPermissionSettings = function() {
+  if ( Platform.OS === 'ios' ) {
+    return;
+  } else if (Platform.OS === 'android') {
+    return this.callNative('openAlarmPermissionSettings', arguments);
+  }
+};
+Notifications.canScheduleExactAlarms = function() {
+  if ( Platform.OS === 'ios' ) {
+    return;
+  } else if (Platform.OS === 'android') {
+    return this.callNative('canScheduleExactAlarms', arguments);
+  }
+};
 
 Notifications.setApplicationIconBadgeNumber = function() {
   return this.callNative('setApplicationIconBadgeNumber', arguments);
