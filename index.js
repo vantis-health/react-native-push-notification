@@ -525,7 +525,7 @@ Notifications.openAlarmPermissionSettings = function() {
 };
 Notifications.canScheduleExactAlarms = function() {
   if ( Platform.OS === 'ios' ) {
-    return;
+    return true;
   } else if (Platform.OS === 'android') {
     return this.callNative('canScheduleExactAlarms', arguments);
   }
